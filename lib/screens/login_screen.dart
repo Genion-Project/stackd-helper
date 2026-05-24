@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../config.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'dart:math';
@@ -101,13 +101,9 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     });
 
     try {
-      final clientId = dotenv.isInitialized ? (dotenv.env['NOTION_CLIENT_ID'] ?? '') : '';
-      
-      if (clientId.isEmpty) {
-        throw 'Notion Client ID is missing.';
-      }
+      const clientId = AppConfig.notionClientId;
 
-      final redirectUri = dotenv.isInitialized ? (dotenv.env['NOTION_REDIRECT_URI'] ?? 'https://stackd.smknurisjkt.org/oauth/callback') : 'https://stackd.smknurisjkt.org/oauth/callback';
+      const redirectUri = AppConfig.notionRedirectUri;
       final encodedRedirectUri = Uri.encodeComponent(redirectUri);
       
       final sessionId = 'sess_${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(10000)}';
@@ -134,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(const Duration(seconds: 3), (timer) async {
       try {
-        final uri = Uri.parse('https://stackd.smknurisjkt.org/oauth/status?session_id=$sessionId');
+        final uri = Uri.parse('${AppConfig.notionPollBaseUrl}?session_id=$sessionId');
         final response = await http.get(uri);
         
         if (response.statusCode == 200) {

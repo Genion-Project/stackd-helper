@@ -1,13 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/models.dart';
 import '../utils/ui_utils.dart';
+import '../config.dart';
 
 class TimelinePage extends StatefulWidget {
-  const TimelinePage({super.key});
+  final Map<String, dynamic>? notionData;
+
+  const TimelinePage({super.key, this.notionData});
 
   @override
   State<TimelinePage> createState() => _TimelinePageState();
@@ -26,11 +28,11 @@ class _TimelinePageState extends State<TimelinePage> {
   Future<void> _fetchNotionData() async {
     setState(() => _isLoading = true);
     try {
-      final token = dotenv.isInitialized ? dotenv.env['NOTION_TOKEN'] : null;
-      final databaseId = dotenv.isInitialized ? dotenv.env['NOTION_DATABASE_ID'] : null;
+      final token = widget.notionData?['access_token'] ?? '';
+      const databaseId = AppConfig.notionDatabaseId;
 
-      if (token == null || databaseId == null) {
-        throw Exception("API keys not found in .env");
+      if (token.isEmpty) {
+        throw Exception('Not authenticated. Please login again.');
       }
 
       final url = Uri.parse('https://api.notion.com/v1/databases/$databaseId/query');
@@ -51,11 +53,11 @@ class _TimelinePageState extends State<TimelinePage> {
           _isLoading = false;
         });
       } else {
-        throw Exception("Failed to load: ${response.statusCode}");
+        throw Exception('Failed to load: ${response.statusCode}');
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      if (mounted) showCustomToast(context, "Error: $e", isError: true);
+      if (mounted) showCustomToast(context, 'Error: $e', isError: true);
     }
   }
 

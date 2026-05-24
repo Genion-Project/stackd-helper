@@ -26,8 +26,8 @@ class _TimelinePageState extends State<TimelinePage> {
   Future<void> _fetchNotionData() async {
     setState(() => _isLoading = true);
     try {
-      final token = dotenv.env['NOTION_TOKEN'];
-      final databaseId = dotenv.env['NOTION_DATABASE_ID'];
+      final token = dotenv.isInitialized ? dotenv.env['NOTION_TOKEN'] : null;
+      final databaseId = dotenv.isInitialized ? dotenv.env['NOTION_DATABASE_ID'] : null;
 
       if (token == null || databaseId == null) {
         throw Exception("API keys not found in .env");

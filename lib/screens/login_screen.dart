@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     });
 
     try {
-      final clientId = dotenv.env['NOTION_CLIENT_ID'] ?? '';
+      final clientId = dotenv.isInitialized ? (dotenv.env['NOTION_CLIENT_ID'] ?? '') : '';
       
       // If no clientId, just do a fake loading for demo purposes
       if (clientId.isEmpty) {
@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
         return;
       }
 
-      final redirectUri = dotenv.env['NOTION_REDIRECT_URI'] ?? 'https://stackd.smknurisjkt.org/oauth/callback';
+      final redirectUri = dotenv.isInitialized ? (dotenv.env['NOTION_REDIRECT_URI'] ?? 'https://stackd.smknurisjkt.org/oauth/callback') : 'https://stackd.smknurisjkt.org/oauth/callback';
       final encodedRedirectUri = Uri.encodeComponent(redirectUri);
       
       final sessionId = 'sess_${DateTime.now().millisecondsSinceEpoch}_${Random().nextInt(10000)}';

@@ -24,6 +24,7 @@ jobs:
         run: flutter config --enable-windows-desktop
 
       - name: Create .env
+        shell: bash
         run: |
           echo "NOTION_DATABASE_ID=29d47a42e70680f5baece5d0e2bde50a" >> .env
           echo "NOTION_CLIENT_ID=366d872b-594c-8183-a25e-00371c7fbcdb" >> .env

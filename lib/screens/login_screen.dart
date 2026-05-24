@@ -103,12 +103,8 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     try {
       final clientId = dotenv.isInitialized ? (dotenv.env['NOTION_CLIENT_ID'] ?? '') : '';
       
-      // If no clientId, just do a fake loading for demo purposes
       if (clientId.isEmpty) {
-        await Future.delayed(const Duration(seconds: 2));
-        showCustomToast(context, 'Demo Login Successful!');
-        _navigateToHome();
-        return;
+        throw 'Notion Client ID is missing.';
       }
 
       final redirectUri = dotenv.isInitialized ? (dotenv.env['NOTION_REDIRECT_URI'] ?? 'https://stackd.smknurisjkt.org/oauth/callback') : 'https://stackd.smknurisjkt.org/oauth/callback';
